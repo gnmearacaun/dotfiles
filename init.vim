@@ -24,7 +24,7 @@ function! PackagerInit() abort
   call packager#add('kristijanhusak/vim-packager', { 'type': 'opt' })
   call packager#add('w0rp/ale', { 'do': 'npm install -g prettier' })
   call packager#add('airblade/vim-gitgutter')
-  "following doesn't work
+  "following doesn't autoscroll in the same sense. Mapped to F8
   call packager#add('vim-scripts/autoscroll.vim')
   call packager#add('itchyny/lightline.vim')
   "call packager#add('Raimondi/delimitMate')
@@ -33,8 +33,8 @@ function! PackagerInit() abort
   call packager#add('neomake/neomake')
   call packager#add('posva/vim-vue')
   call packager#add('junegunn/gv.vim')
-  call packager#add('vimwiki/vimwiki')
   call packager#add('mattn/calendar-vim')
+  call packager#add('vimwiki/vimwiki')
   "call packager#add('vimwiki/vimwiki', { 'branch': 'dev' })
   "call packager#add('dyng/ctrlsf.vim')
   call packager#add('Shougo/defx.nvim')
@@ -50,12 +50,12 @@ function! PackagerInit() abort
   call packager#add('junegunn/goyo.vim')
   call packager#add('othree/html5.vim')
 " Stuff from https://github.com/nickjj/dotfiles/blob/master/.vimrc
-" Show git file changes in the gutter?
+" Show git file changes in the gutter
   call packager#add('tpope/vim-eunuch')
   call packager#add('elzr/vim-json')
   call packager#add('tpope/vim-markdown')
 " Better display unwanted whitespace.
-  call packager#add('ntpeters/vim-better-whitespace')
+" call packager#add('ntpeters/vim-better-whitespace')
 " Run a diff on 2 directories/
 "  call packager#add('will133/vim-dirdiff')
 " Automatically clear search highlights after you move your cursor.
@@ -81,31 +81,36 @@ command! PackagerStatus call PackagerInit() | call packager#status()
 "}}}
 
 " ================ Custom mappings ======================== {{{
+" Ripgrep to locate files
 nnoremap <C-g> :Rg<Cr>
 let g:mapleader = "\<Space>"    " Leader key is Spacebar
-"auto-scroll with F8!
+" auto-scroll with F8
 :map <F8> <C-E>:sleep 3500m<CR><Esc>j<F8>
-nnoremap <leader><CR> za|                " Toggle fold
-nnoremap zo zR                  " Open all folds
-nnoremap <A-Return> zMza        " Focus the current fold by closing all others
-inoremap kj <Esc>|              " Escape from insert mode
+" Toggle fold
+nnoremap <leader><CR> za|
+" Open all folds
+nnoremap zo zR
+" Focus on current fold only
+nnoremap <A-Return> zMza
+" Escape from insert mode easily
+inoremap kj <Esc>|
 inoremap jk <Esc>
 inoremap jj <Esc>
 inoremap kk <Esc>
-nnoremap j gj|                   " Move linewise in normal mode
+" Move linewise in normal mode
+nnoremap j gj|
 nnoremap k gk|
-" move to beginning/end of line
+" Move to beginning of line
 nnoremap B ^
+" Move to end of line
 nnoremap E $
-" $/^ doesn't do anything
-nnoremap $ <nop>
-nnoremap ^ <nop>
-" Stop having to press that shift button
+" Easy colon, shift not needed
 nnoremap ; :
 vnoremap ; :
 nnoremap : ;
 vnoremap : ;
-vnoremap  <leader>y  "+y        " Copy to clipboard
+" Copy to clipboard
+vnoremap  <leader>y  "+y
 nnoremap  <leader>Y  "+yg_
 nnoremap  <leader>y  "+y
 nnoremap  <leader>yy  "+yy
@@ -113,35 +118,45 @@ vnoremap <C-c> "+y
 vmap <Leader>d "+d
 nmap <Leader>d "+d
 nnoremap x "_x
-nnoremap Y y$                   " Yank to the end of the line
-nnoremap <leader>p "+p          " Paste from clipboard
+" Yank to the end of the line
+nnoremap Y y$
+" Paste from clipboard
+nnoremap <leader>p "+p
 nnoremap <leader>P "+P
 "paste line(s) at the bottom of the file
 nnoremap <leader>e :mark '<cr>:$put<cr>`'
 vnoremap <leader>p "+p
 vnoremap <leader>P "+P
 xnoremap p  "0p
-inoremap <C-v> <Esc>"+p         " Paste from system clipboard in insert mode
-vnoremap y y`]                  " Move to the end of yanked text after yanking
-nnoremap p p`]                  " Move to the end of yanked text after pasting
+" Paste from system clipboard in insert mode
+inoremap <C-v> <Esc>"+p
+" Move to end of yanked text after yank
+vnoremap y y`]
+" Move to end of text after paste
+nnoremap p p`]
 vnoremap p p`]
-nnoremap cn *``cgn              " Change next match in a repeatable manner
+" Change next match in a repeatable manner
+nnoremap cn *``cgn
 nnoremap cN *``cgN
 vnoremap <expr> cn "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>" . "``cgn"
 vnoremap <expr> cN "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>" . "``cgN"
-nnoremap <leader>a =ip
-nnoremap <Leader>. viw"0p        " Replace current work with last yanked selection
+nnoremap <leader>a =ip    " Indent a paragraph
+" Replace current work with last yanked selection
+nnoremap <Leader>. viw"0p
 nnoremap cp yap<S-}>p
-xnoremap s :s//g<Left><Left>     " Quick substitute within a selected area
+" Quick substitute within a selected area
+" xnoremap s :s//g<Left><Left>
 " highlight last inserted text
 "To select the last changed text (or the text that was just pasted):
+" instead of gV
 nnoremap gp `[v`]
-"nnoremap gV `[v`]
 " Select last paste. Except interferes with vimdiff!!
 "nnoremap <expr> gp '`['.strpart(getregtype(), 0, 1).'`]'
-nmap <Leader>c gcc               " Toggle line commenting
+" Toggle line commenting
+nmap <Leader>c gcc
 xmap <Leader>c gc
-nnoremap <silent><Leader>w :write<CR>          " Fast saving
+" Fast saving
+nnoremap <silent><Leader>w :write<CR>
 vnoremap <silent><Leader>w <Esc>:write<CR>
 nnoremap <silent><C-s> :<C-u>write<CR>
 vnoremap <silent><C-s> :<C-u>write<CR>
@@ -154,10 +169,12 @@ nnoremap <silent> q :call CloseBuffer()<CR>
 nnoremap <silent><Leader>q :call CloseBuffer()<CR>
 nnoremap <silent><Leader>Q :call CloseBuffer(1)<CR>
 nnoremap Q q
-cmap W!! w !sudo tee % >/dev/null          " Save with sudo
+" Save with sudo
+cmap W!! w !sudo tee % >/dev/null
 " Start an external command with a single she-bang
 nnoremap ! :!
-nnoremap <leader>r :ArgWrap<CR>            " Wrap/Unwrap lines
+" Wrap/Unwrap lines
+nnoremap <leader>r :ArgWrap<CR>
 "Remove all trailing whitespace by pressing F5
 nnoremap <leader>s :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 vnoremap mk :m-2<CR>gv=gv
@@ -174,22 +191,21 @@ endif
 
 " }}}
 " ================ Windows and Tabs ============== {{{
-
-"nnoremap <C-p> :<C-u>FZF ~<CR>            "Fuzzy Finder
+"Fuzzy Finder
+"nnoremap <C-p> :<C-u>FZF ~<CR>
 nnoremap <C-p> :<C-u>FZF<CR>
-"nnoremap <silent> <leader>f :FZF ~<CR>
-"nnoremap <silent> <leader>F :FZF<CR>
 nnoremap <Leader>f :Files<CR>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>t :BTags<CR>
 nnoremap <Leader>h :History<CR>
 nnoremap <leader>l :Lines<cr>
-" Search content in the current file and in files under the current directory
-" conflicts with vimdiff command
-" nmap <leader>g :Ag<cr>
-nnoremap  [Window]   <Nop>              " Window prefix is mapped to 's'
+" Search content in the current file and in files under the current directory. But it conflicts with vimdiff command
+nmap <leader>g :Ag<cr>
+" Window prefix is mapped to 's'
+nnoremap  [Window]   <Nop>
 nmap      s [Window]
-nnoremap <a-;> :<C-u>tabnew<CR>         " s: Windows and buffers/tabs
+" s: Windows and buffers/tabs
+nnoremap <a-;> :<C-u>tabnew<CR>
 nnoremap <Leader>o :<C-u>tabnew<CR>
 nnoremap <silent> [Window]t  :tabnew<CR>
 nnoremap <silent> [Window]o  :<C-u>only<CR>
@@ -206,7 +222,7 @@ nnoremap <silent> g0 :<C-u>tabfirst<CR>
 nnoremap <silent> g$ :<C-u>tablast<CR>
 " Toggle between last 2 buffers
  nnoremap <leader><tab> <C-^>
-" Spliting screen
+" Split screen
 nnoremap <silent> [Window]v  :<C-u>split<CR>
 nnoremap <silent> [Window]g  :<C-u>vsplit<CR>
 nnoremap <silent> ss :split<CR><C-W>j
@@ -373,7 +389,7 @@ hi LineNr ctermbg=none
 hi Folded ctermbg=black
 hi clear SpellBad
 hi SpellBad cterm=underline
-set cursorline                        "highlight current line
+" set cursorline                  "highlight current line
 hi CursorLine term=italic cterm=italic guibg=Grey30
 nnoremap <leader>i :set cursorline! cursorcolumn!<cr>
 let g:quantum_italics=1
@@ -400,7 +416,7 @@ if &diff
 endif
 
 let g:lightline = {
-      \ 'colorscheme': 'one',
+      \ 'colorscheme': 'jellybeans',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -494,7 +510,7 @@ set history=700               "store lots of :cmdline history
 set showcmd                   "show incomplete cmds down the bottom
 set noshowmode                "slims down the statusline
 set gdefault                  "set global flag for search and replace
-set guicursor=a:blinkon800-blinkwait800-blinkoff800 "blinking cursor
+"set guicursor=a:blinkon800-blinkwait800-blinkoff800 "blinking cursor
 set smartcase               "smart case search if there is uppercase
 set ignorecase              "case insensitive search
 set mouse=a                 "enable mouse usage
@@ -559,7 +575,7 @@ set wildignore+=*.png,*.jpg,*.gif
 augroup vimrc
   autocmd!
 autocmd QuickFixCmdPost [^l]* cwindow       "Open quickfix window after grepping
-autocmd BufWritePre * call StripTrailingWhitespaces() "Auto-remove trailing spaces
+" autocmd BufWritePre * call StripTrailingWhitespaces() "Auto-remove trailing spaces
 autocmd InsertEnter * set nocul  "Remove cursorline highlight
 autocmd InsertLeave * set cul "Add cursorline highlight normal mode
 "Refresh file when vim gets focus
@@ -622,15 +638,15 @@ function! StatuslineFn(name, ...) abort
   endtry
 endfunction
 
-function! StripTrailingWhitespaces()
-  if &modifiable
-    let l:l = line('.')
-    let l:c = col('.')
-    call execute('%s/\s\+$//e')
-    call histdel('/', -1)
-    call cursor(l:l, l:c)
-  endif
-endfunction
+"function! StripTrailingWhitespaces()
+"  if &modifiable
+"    let l:l = line('.')
+"    let l:c = col('.')
+"    call execute('%s/\s\+$//e')
+"    call histdel('/', -1)
+"    call cursor(l:l, l:c)
+"  endif
+"endfunction
 
 function! Search(...)
   let l:default = a:0 > 0 ? expand('<cword>') : ''
@@ -806,28 +822,28 @@ autocmd BufReadPost *
 " }}}
 " {{{ function for marking extra whitespace (conditionally)
 
-au! ColorScheme ExtraWhitespace ctermbg=red
+" au! ColorScheme ExtraWhitespace ctermbg=red
 
-fun! MarkExtraWhitespace(regex)
+" fun! MarkExtraWhitespace(regex)
     " Only mark if the g:noMarkExtraWhitespace variable isn't set
-    if exists('g:calendarWhitespace')
-      highlight ExtraWhitespace ctermbg=None
-    elseif exists('g:markdownWhitespace')
-      highlight ExtraWhitespace ctermbg=LightCyan
-    else
-      highlight ExtraWhitespace ctermbg=red
-    endif
+"     if exists('g:calendarWhitespace')
+"       highlight ExtraWhitespace ctermbg=None
+"     elseif exists('g:markdownWhitespace')
+"       highlight ExtraWhitespace ctermbg=LightCyan
+"     else
+"       highlight ExtraWhitespace ctermbg=red
+"     endif
 
-    execute 'match ExtraWhitespace ' . a:regex
-endfun
+"     execute 'match ExtraWhitespace ' . a:regex
+" endfun
 
-autocmd FileType vimwiki,markdown let g:markdownWhitespace=1
-autocmd FileType calendar let g:calendarWhitespace=1
-autocmd User Startified highlight ExtraWhitespace ctermbg=None
+" autocmd FileType vimwiki,markdown let g:markdownWhitespace=1
+" autocmd FileType calendar let g:calendarWhitespace=1
+" autocmd User Startified highlight ExtraWhitespace ctermbg=None
 
-au BufEnter * call MarkExtraWhitespace("/\\s\\s$/")
-au InsertEnter * call MarkExtraWhitespace("/\\s\\+\\%#\\@<!$/")
-au InsertLeave * call MarkExtraWhitespace("/\\s\\+$/")
+" au BufEnter * call MarkExtraWhitespace("/\\s\\s$/")
+" au InsertEnter * call MarkExtraWhitespace("/\\s\\+\\%#\\@<!$/")
+" au InsertLeave * call MarkExtraWhitespace("/\\s\\+$/")
 
 " {{{ from https://blog.mague.com/?p=602" Run multiple wikis "
 "let g:vimwiki_list = [
